@@ -9,7 +9,7 @@
 df<- read_csv("practicopln.csv")
 my_stopwords <- read_csv("my_stopwords.csv")
 
-#1)Superficialmente, øDe qu√® trata este corpus? Utilizar funciones exploratorias
+#1)Superficialmente, ¬øDe qu√© trata este corpus? Utilizar funciones exploratorias
 
 str(df)
 glimpse(df)
@@ -18,26 +18,26 @@ tail(df)
 summary(df)
 skim(df)
 
-#Conjunto de tweets con 90 columnas y 242564 filas. Tipos de datos: caracteres, lÛgicos, numÈricos y hay uno que no conocÌa: POSIXct, que por lo visto se refiere a la fecha/hora de creaciÛn de los tweets. Buscando informaciÛn al respecto encontrÈ lo siguiente: "R dispone en su paquete base de dos clases especÌficamente diseÒadas para tratar con datos de tipo fecha/hora: Date (solo para fechas) y POSIXt (adem·s de la fecha incluye hora y huso horario); esta ˙ltima clase contiene dos subclases, POSIXct y POSIXlt que se diferencian simplemente en la forma en que almacenan internamente la fecha y la hora. El paquete lubridate dispone de diversas funciones que facilitas la extracciÛn de componentes de un objeto fecha/hora de clase POSIXct" (fuente: http://estadistica-dma.ulpgc.es/cursoR4ULPGC/6h-Fechas.html)
+#Conjunto de tweets con 90 columnas y 242564 filas. Tipos de datos: caracteres, l√≥gicos, num√©ricos y hay uno que no conoc√≠a: POSIXct, que por lo visto se refiere a la fecha/hora de creaci√≥n de los tweets. Buscando informaci√≥n al respecto encontr√© lo siguiente: "R dispone en su paquete base de dos clases espec√≠ficamente dise√±adas para tratar con datos de tipo fecha/hora: Date (solo para fechas) y POSIXt (adem√°s de la fecha incluye hora y huso horario); esta √∫ltima clase contiene dos subclases, POSIXct y POSIXlt que se diferencian simplemente en la forma en que almacenan internamente la fecha y la hora. El paquete lubridate dispone de diversas funciones que facilitas la extracci√≥n de componentes de un objeto fecha/hora de clase POSIXct" (fuente: http://estadistica-dma.ulpgc.es/cursoR4ULPGC/6h-Fechas.html)
 
 dfpalabras <- df %>% unnest_tokens(word, text) %>% 
   anti_join(my_stopwords) %>%
   count(word, sort = TRUE)
-#Palabras m·s frecuentes en el corpus: feminista, feminismo, feministas, t.co, https, mujeres, maradona, mujer, muerte, mierda. Como aparecen expresiones no lexem·ticas (t.co, https), busquÈ una forma de eliminarlas.
+#Palabras m?s frecuentes en el corpus: feminista, feminismo, feministas, t.co, https, mujeres, maradona, mujer, muerte, mierda. Como aparecen expresiones no lexem√°ticas (t.co, https), busqu√© una forma de eliminarlas.
 nosirve <-  data.frame(word= c("t.co", "https"))
 my_stopwords <- bind_rows(my_stopwords, nosirve)
 
 head(df, 3)
 tail(df, 3)
-#PerÌodo de tiempo de los tweets: entre el 23/09/20 al 04/02/2021 (la muerte de Maradona fue el 25/11, lo que explica que aparezca entre las palabras m·s mencionadas)
+#Per√≠odo de tiempo de los tweets: entre el 23/09/20 al 04/02/2021 (la muerte de Maradona fue el 25/11, lo que explica que aparezca entre las palabras m√°s mencionadas)
 
 
 #2) ¬øEn qu√© otros idiomas fueron escritos estos tweets? Me quedo con aquellos tweets que solo han sido escritos en espa√±ol
 freq(df$lang)
-#94,62% parece ser espaÒol; 4,56% portuguÈs; el resto no llega al 1%.
+#94,62% parece ser espa√±ol; 4,56% portugu√©s; el resto no llega al 1%.
 unique(df$lang)
 #[1] "es"  "pt"  "und" "en"  "it"  "tl"  "ca"  "in"  "et"  "eu"  "da"  "pl"  "lt" [14] "fr"  "ro"  "tr"  "ht"  "no"  "fi"  "cy"  "sv"  "nl"
-#Algunas abreviaturas pueden inferirse: espaÒol, portuguÈs, inglÈs, francÈs, italiano.
+#Algunas abreviaturas pueden inferirse: espa√±ol, portugu√©s, ingl√©s, franc√©s, italiano.
 
 glimpse(df)
 df1 <- df%>%
@@ -49,11 +49,11 @@ dfpalabras <- df1 %>% unnest_tokens(word, text) %>%
   anti_join(my_stopwords) %>%
   count(word, sort = TRUE)
 palabrasmasfrecuentes <- dfpalabras %>% top_n(50)
-#feminista, feministas, feminismo, mujeres, maradona, mujer, muerte, mierda, re, aborto, festejar, causa, pelotuda, ideologia, reforzar, hombres, derechos, movimiento, lucha, sos, vos, aÒos, militancia, gÈnero, violencia, paÌs, hora, chile, diego, silencio, frente, hablar, hombre, ley, vida, varones, gente, favor, bueno, quiero, violadores, ac·, femicidios, motuda, estado, social, popular, partido, problema, izquierda. Entre las palabras hay algunos argentinismos frecuentes y derivados del voseo: re, sos, vos, ac·, que quiz· sean menos significativos como palabras coloquiales de uso com˙n. 
+#feminista, feministas, feminismo, mujeres, maradona, mujer, muerte, mierda, re, aborto, festejar, causa, pelotuda, ideologia, reforzar, hombres, derechos, movimiento, lucha, sos, vos, a?os, militancia, g√©nero, violencia, pa√≠s, hora, chile, diego, silencio, frente, hablar, hombre, ley, vida, varones, gente, favor, bueno, quiero, violadores, ac√°, femicidios, motuda, estado, social, popular, partido, problema, izquierda. Entre las palabras hay algunos argentinismos frecuentes y derivados del voseo: re, sos, vos, ac√°, que quiz√° sean menos significativos como palabras coloquiales de uso com√∫n. 
 
 
 
-#4)  Ahora, podemos hacernos una idea de lo que tratan estos tweets, pero podr√≠amos ir un poco m·s all√° con otras herramientas. Tambi√©n podr√≠amos explorar n-grams. Aqu√≠ podr√≠amos explorar el n√∫mero de n-grams que quisi√©ramos, pero lo recomendable en PLN es explorar hasta 3-grams y no m√°s ya que suele ser infructuoso. 
+#4)  Ahora, podemos hacernos una idea de lo que tratan estos tweets, pero podr√≠amos ir un poco m√°s all√° con otras herramientas. Tambi√©n podr√≠amos explorar n-grams. Aqu√≠ podr√≠amos explorar el n√∫mero de n-grams que quisi√©ramos, pero lo recomendable en PLN es explorar hasta 3-grams y no m√°s ya que suele ser infructuoso. 
 #Veamos entonces ¬øcu√°les son los 10 bigramas y los 10 trigramas m√°s comunes? Recordemos que aqu√≠ la estrategia para limpiar palabras vac√≠as no es anti_join
 
 ##BIGRAMAS
@@ -65,7 +65,7 @@ bigramas <- df1  %>%
 bigramas <- bigramas %>%
   separate(bigram, c("word1", "word2"), sep = " ")
 
-#Para limpiar palabras vacÌas (no se aplica antijoin porque las columnas no tienen el mismo nombre):
+#Para limpiar palabras vac√≠as (no se aplica antijoin porque las columnas no tienen el mismo nombre):
 bigramas <- bigramas %>%
   filter(!word1 %in% my_stopwords$word) %>%
   filter(!word2 %in% my_stopwords$word)
@@ -115,10 +115,10 @@ trigramas %>% top_n(10)
 #7 re mil mierda                  1309
 #8 profe feministas lucharemos    1001
 #9 profesora sandra pizarro       1001
-#10 sandra pizarro vÌctima         1001
+#10 sandra pizarro v?ctima         1001
 
 #5) ¬øQu√© nodos de significado existen y cu√°les son son los n√∫cleos m√°s importantes? Lo graficamos a trav√©s de redes de n.gramas. Recordar que para graficar estas redes, los bigramas tienen que estar separados.
-#Ac· cuando corrÌa el cÛdigo para hacer las matrices/gr·ficos me daba este error: "Error: no se puede ubicar un vector de tamaÒo x". Lo estuve buscando y parece ser un problema de Windows y la cantidad de memoria RAM que le deja usar a R (mi compu es relativamente nueva, asÌ que no creo que vaya por el lado del hardware la cosa). Por lo que vi en los foros otros SO como Linux no suelen tener ese error. Lo solucionÈ eliminando pr·cticamente todos los objetos del environment excepto el indispensable de bigramas, para liberar la RAM, y funcionÛ.
+#Ac√° cuando corr√≠a el c√≥digo para hacer las matrices/gr√°ficos me daba este error: "Error: no se puede ubicar un vector de tama√±o x". Lo estuve buscando y parece ser un problema de Windows y la cantidad de memoria RAM que le deja usar a R (mi compu es relativamente nueva, as√≠ que no creo que vaya por el lado del hardware la cosa). Por lo que vi en los foros otros SO como Linux no suelen tener ese error. Lo solucion√© eliminando pr√°cticamente todos los objetos del environment excepto el indispensable de bigramas, para liberar la RAM, y funcion√≥.
 
 #MATRICES
 
@@ -132,7 +132,7 @@ trigramasmatriz <- trigramas%>%
   graph_from_data_frame()
 print(trigramasmatriz)
 
-#GR¡FICOS
+#GR√ÅFICOS
 
 plot1 <- ggraph(bigramasmatriz, layout= "fr") +
   geom_edge_link(color= "steelblue") +
